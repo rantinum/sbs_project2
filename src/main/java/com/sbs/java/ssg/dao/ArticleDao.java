@@ -3,48 +3,69 @@ package com.sbs.java.ssg.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sbs.java.ssg.dto.Member;
+import com.sbs.java.ssg.container.Container;
+import com.sbs.java.ssg.dto.Article;
 
-public class MemberDao extends Dao {
-	public List<Member> members;
+public class ArticleDao extends Dao {
+	public List<Article> articles;
 
-	public MemberDao() {
-		members = new ArrayList<>();
+	public ArticleDao() {
+		articles = new ArrayList<>();
 	}
 
-	public void add(Member member) {
-		members.add(member);
-		lastId = member.id;
+	public void add(Article article) {
+		articles.add(article);
+		lastId = article.id;
+	}
+
+	public List<Article> getArticles() {
+		return articles;
 	}
 	
-	public int getMemberIndexByLoginId(String loginId) {
+	public int getArticleIndexById(int id) {
 		int i = 0;
-		for ( Member member : members ) {
-			if ( member.loginId.equals(loginId) ) {
+
+		for (Article article : articles) {
+			if (article.id == id) {
 				return i;
 			}
-			
+
 			i++;
 		}
+
 		return -1;
 	}
-	
-	public Member getMemberByLoginId(String loginId) {
-		int index = getMemberIndexByLoginId(loginId);
-		
-		if ( index == -1 ) {
-			return null;
+
+	public Article getArticleById(int id) {
+		int index = getArticleIndexById(id);
+
+		if (index != -1) {
+			return articles.get(index);
 		}
-		
-		return members.get(index);
+
+		return null;
 	}
 
-	public String getMemberByNameId(int id) {
-		for ( Member member : members ) {
-			if ( member.id == id) {
-				return member.name;
+	public List<Article> getForPrintArticles(String searchkeyword) {
+		if (searchkeyword != null && searchkeyword.length() != 0) {
+			List<Article> forPrintArticles = new ArrayList<>();
+			
+			if (searchkeyword.length() > 0) {
+				for (Article article : articles) {
+					if (article.title.contains(searchkeyword)) {
+						forPrintArticles.add(article);
+					}
+				}
 			}
+
+			return forPrintArticles;
 		}
-		return "";
+
+		return articles;
 	}
+
+	public void remove(Article foundArticle) {
+		articles.remove(foundArticle);
+	}
+
 }

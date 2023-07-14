@@ -7,8 +7,18 @@ import com.sbs.java.ssg.controller.ArticleController;
 import com.sbs.java.ssg.controller.Controller;
 import com.sbs.java.ssg.controller.ExportController;
 import com.sbs.java.ssg.controller.MemberController;
+import com.sbs.java.ssg.db.DBConnection;
 
 public class App {
+	public App() {
+		DBConnection.DB_NAME = "sbs_proj";
+		DBConnection.DB_USER = "sbsst";
+		DBConnection.DB_PASSWORD = "sbs123414";
+		DBConnection.DB_PORT = 3306;
+		
+		Container.getDBConnection().connect();
+	}
+	
 	public void start() {
 		System.out.println("== 프로그램 시작 ==");
 

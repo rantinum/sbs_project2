@@ -30,9 +30,14 @@ CREATE TABLE `article` (
   `boardId` int(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `boardId` (`boardId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `article` */
+
+insert  into `article`(`id`,`regDate`,`updateDate`,`title`,`body`,`memberId`,`boardId`) values 
+(1,'2023-07-14 12:08:08','2023-07-14 12:08:08','제목1','내용1',1,1),
+(2,'2023-07-14 12:08:30','2023-07-14 12:08:30','제목2','내용2',2,1),
+(3,'2023-07-14 12:08:30','2023-07-14 12:08:30','제목3','내용3',1,2);
 
 /*Table structure for table `articleReply` */
 
@@ -47,9 +52,13 @@ CREATE TABLE `articleReply` (
   `articleId` int(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `articleId` (`articleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `articleReply` */
+
+insert  into `articleReply`(`id`,`regDate`,`updateDate`,`body`,`memberId`,`articleId`) values 
+(1,'2023-07-14 12:09:44','2023-07-14 12:09:44','댓글1',1,2),
+(2,'2023-07-14 12:09:44','2023-07-14 12:09:44','댓글2',2,1);
 
 /*Table structure for table `board` */
 
@@ -63,9 +72,13 @@ CREATE TABLE `board` (
   `name` char(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `board` */
+
+insert  into `board`(`id`,`regDate`,`updateDate`,`code`,`name`) values 
+(1,'2023-07-14 12:12:39','2023-07-14 12:12:39','notice','공지'),
+(2,'2023-07-14 12:12:39','2023-07-14 12:12:39','free','자유');
 
 /*Table structure for table `member` */
 
@@ -80,9 +93,14 @@ CREATE TABLE `member` (
   `name` char(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `loginId` (`loginId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `member` */
+
+insert  into `member`(`id`,`regDate`,`updateDate`,`loginId`,`loginPw`,`name`) values 
+(1,'2023-07-14 12:11:13','2023-07-14 12:11:13','admin','admin','관리자'),
+(2,'2023-07-14 12:11:40','2023-07-14 12:11:40','user1','user1','유저1'),
+(3,'2023-07-14 12:11:40','2023-07-14 12:11:40','user2','user2','유저2');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

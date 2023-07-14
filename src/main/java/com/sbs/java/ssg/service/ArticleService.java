@@ -33,4 +33,8 @@ public class ArticleService {
 		return articleDao.getForPrintArticles(null);
 	}
 
+	public List<Article> getArticles() {
+		return articleDao.getArticles();
+	}
+
 }

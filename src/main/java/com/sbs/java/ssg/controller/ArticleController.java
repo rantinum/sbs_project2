@@ -54,9 +54,9 @@ public class ArticleController extends Controller {
 	public void makeTestData() {
 		System.out.println("테스트를 위한 데이터를 생성합니다.");
 
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 1, "제목1", "내용1", 10));
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목2", "내용2", 22));
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, "제목3", "내용3", 33));
+		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 1, 2, "제목1", "내용1", 10));
+		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, 1, "제목2", "내용2", 22));
+		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, 1, "제목3", "내용3", 33));
 	}
 
 	public void doWrite() {
@@ -68,22 +68,25 @@ public class ArticleController extends Controller {
 		String body = sc.nextLine();
 		
 		Member loginedMember = session.getLoginedMember();
+		int boardId = 1;
 
-		Article article = new Article(id, regDate, loginedMember.id, title, body);
+		Article article = new Article(id, regDate, loginedMember.id, boardId, title, body);
 		articleService.write(article);
 
 		System.out.printf("%d번 글이 생성되었습니다.\n", id);
 	}
 
 	public void showList() {
-		String searchKeyword = command.substring("article list".length()).trim();
+		List<Article> forPrintArticles = articleService.getArticles();
 		
-		List<Article> forPrintArticles = articleService.getForPrintArticles(searchKeyword);
-		
-		if (forPrintArticles.size() == 0) {
-			System.out.println("검색결과가 존재하지 않습니다.");
-			return;
-		}
+//		String searchKeyword = command.substring("article list".length()).trim();
+//		
+//		List<Article> forPrintArticles = articleService.getForPrintArticles(searchKeyword);
+//		
+//		if (forPrintArticles.size() == 0) {
+//			System.out.println("검색결과가 존재하지 않습니다.");
+//			return;
+//		}
 
 		System.out.println("번호 |   작성자  | 조회 | 제목");
 		for (int i = forPrintArticles.size() - 1; i >= 0; i--) {

@@ -1,5 +1,7 @@
 package com.sbs.java.ssg.dto;
 
+import java.util.Map;
+
 public class Member extends Dto {
 	public String loginId;
 	public String loginPw; 
@@ -11,5 +13,12 @@ public class Member extends Dto {
 		this.loginId = loginId;
 		this.loginPw = loginPw;
 		this.name = name;
+	}
+
+	public Member(Map<String, Object> row) {
+		super(row);
+		this.loginId = (String) row.get("loginId");
+		this.loginPw = (String) row.get("loginPw");
+		this.name = (String) row.get("name");
 	}
 }

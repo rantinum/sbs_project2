@@ -5,6 +5,9 @@ import java.util.Map;
 
 import com.sbs.java.ssg.util.Util;
 
+import lombok.Data;
+
+@Data
 public class Dto {
 	public int id;
 	public String regDate;

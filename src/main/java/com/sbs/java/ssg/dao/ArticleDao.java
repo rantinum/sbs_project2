@@ -7,6 +7,7 @@ import java.util.Map;
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.db.DBConnection;
 import com.sbs.java.ssg.dto.Article;
+import com.sbs.java.ssg.dto.Board;
 
 public class ArticleDao extends Dao {
 	public List<Article> articles;
@@ -17,26 +18,36 @@ public class ArticleDao extends Dao {
 		dbConnection = Container.getDBConnection();
 	}
 
-	public void add(Article article) {
-		articles.add(article);
-		lastId = article.id;
+	public int write(Article article) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("INSERT INTO article "));
+		sb.append(String.format("SET regDate = NOW(), "));
+		sb.append(String.format("updateDate = NOW(), "));
+		sb.append(String.format("title = '%s', ", article.title));
+		sb.append(String.format("body = '%s', ", article.body));
+		sb.append(String.format("memberId = '%s', ", article.memberId));
+		sb.append(String.format("boardId = '%s' ", article.boardId));
+
+
+		return dbConnection.insert(sb.toString());
 	}
 
 	public List<Article> getArticles() {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append(String.format("SELECT * FROM article"));
-		
+
 		List<Article> articles = new ArrayList<>();
 		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
-		
-		for ( Map<String, Object> row : rows ) {
+
+		for (Map<String, Object> row : rows) {
 			articles.add(new Article(row));
 		}
-		
+
 		return articles;
 	}
-	
+
 	public int getArticleIndexById(int id) {
 		int i = 0;
 
@@ -64,7 +75,7 @@ public class ArticleDao extends Dao {
 	public List<Article> getForPrintArticles(String searchkeyword) {
 		if (searchkeyword != null && searchkeyword.length() != 0) {
 			List<Article> forPrintArticles = new ArrayList<>();
-			
+
 			if (searchkeyword.length() > 0) {
 				for (Article article : articles) {
 					if (article.title.contains(searchkeyword)) {
@@ -81,6 +92,22 @@ public class ArticleDao extends Dao {
 
 	public void remove(Article foundArticle) {
 		articles.remove(foundArticle);
+	}
+
+	public Board getBoard(int id) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("SELECT * "));
+		sb.append(String.format("FROM `board` "));
+		sb.append(String.format("WHERE id = '%s' ", id));
+
+		Map<String, Object> row = dbConnection.selectRow(sb.toString());
+
+		if (row.isEmpty()) {
+			return null;
+		}
+
+		return new Board(row);
 	}
 
 }

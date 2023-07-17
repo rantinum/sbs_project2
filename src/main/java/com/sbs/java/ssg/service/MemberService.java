@@ -15,13 +15,13 @@ public class MemberService {
 		return memberDao.getMemberByLoginId(loginId);
 	}
 
-	public int join(String loginId, String loginPw, String name) {
+	public void join(String loginId, String loginPw, String name) {
 		Member member = new Member(loginId, loginPw, name);
-		return memberDao.join(member);
+		memberDao.join(member);
 	}
 
 	public String getMemberByNameId(int memberId) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

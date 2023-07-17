@@ -51,29 +51,18 @@ public class ArticleController extends Controller {
 		}
 	}
 
-	public void makeTestData() {
-		System.out.println("테스트를 위한 데이터를 생성합니다.");
-
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 1, 2, "제목1", "내용1", 10));
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, 1, "제목2", "내용2", 22));
-		articleService.write(new Article(Container.articleDao.getNewId(), Util.getNowDateStr(), 2, 1, "제목3", "내용3", 33));
-	}
-
 	public void doWrite() {
-		int id = Container.articleDao.getNewId();
-		String regDate = Util.getNowDateStr();
 		System.out.printf("제목 : ");
 		String title = sc.nextLine();
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
 		
-		Member loginedMember = session.getLoginedMember();
-		int boardId = 1;
+		int memberId = session.getLoginedMember().getId();
+		int boardId = session.getCurrentBoard().getId();
 
-		Article article = new Article(id, regDate, loginedMember.id, boardId, title, body);
-		articleService.write(article);
+		int newId = articleService.write(memberId, boardId, title, body);
 
-		System.out.printf("%d번 글이 생성되었습니다.\n", id);
+		System.out.printf("%d번 글이 생성되었습니다.\n", newId);
 	}
 
 	public void showList() {

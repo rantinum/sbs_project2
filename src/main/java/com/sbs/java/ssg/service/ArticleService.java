@@ -5,14 +5,15 @@ import java.util.List;
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.dao.ArticleDao;
 import com.sbs.java.ssg.dto.Article;
+import com.sbs.java.ssg.dto.Board;
 
 public class ArticleService {
 	private ArticleDao articleDao;
-	
+
 	public ArticleService() {
 		articleDao = Container.articleDao;
 	}
-	
+
 	public List<Article> getForPrintArticles(String searchkeyword) {
 		return articleDao.getForPrintArticles(searchkeyword);
 	}
@@ -25,8 +26,9 @@ public class ArticleService {
 		articleDao.remove(foundArticle);
 	}
 
-	public void write(Article article) {
-		articleDao.add(article);
+	public int write(int memberId, int boardId, String title, String body) {
+		Article article = new Article(memberId, boardId, title, body);
+		return articleDao.write(article);
 	}
 
 	public List<Article> getForPrintArticles() {
@@ -35,6 +37,10 @@ public class ArticleService {
 
 	public List<Article> getArticles() {
 		return articleDao.getArticles();
+	}
+
+	public Board getBoard(int id) {
+		return articleDao.getBoard(id);
 	}
 
 }

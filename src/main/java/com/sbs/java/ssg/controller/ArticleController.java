@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.dto.Article;
+import com.sbs.java.ssg.dto.Board;
 import com.sbs.java.ssg.dto.Member;
 import com.sbs.java.ssg.service.ArticleService;
 import com.sbs.java.ssg.service.MemberService;
-import com.sbs.java.ssg.util.Util;
 
 public class ArticleController extends Controller {
 	private Scanner sc;
@@ -42,13 +42,38 @@ public class ArticleController extends Controller {
 		case "modify":
 			doModify();
 			break;
-		case "delete":
-			doDelete();
+		case "changeBoard":
+			doChangeBoard();
+			break;
+		case "currentBoard":
+			doCurrentBoard();
 			break;
 		default:
 			System.out.println("존재하지 않는 명령어 입니다.");
 			break;
 		}
+	}
+
+	private void doCurrentBoard() {
+		Board board = session.getCurrentBoard();
+		System.out.printf("현재 게시판 : %s게시판\n", board.getName());
+		
+	}
+
+	private void doChangeBoard() {
+		String[] commandBits = command.split(" ");
+		int boardCode = Integer.parseInt(commandBits[2]);
+		
+
+		Board board = articleService.getBoard(boardCode);
+		
+		if ( board == null ) {
+			System.out.println("해당 게시판이 존재하지 않습니다.");
+		} else {
+			System.out.printf("[%s게시판] 으로 게시판이 변경되었습니다.\n", board.getName());
+			session.setCurrentBoard(board);
+		}
+		
 	}
 
 	public void doWrite() {
@@ -90,7 +115,7 @@ public class ArticleController extends Controller {
 		String[] commandBits = command.split(" ");
 		int id = Integer.parseInt(commandBits[2]);
 
-		Article foundArticle = articleService.getArticleById(id);
+		Article foundArticle = articleService.getForPrintArticle(id);
 
 		if (foundArticle == null) {
 			System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);

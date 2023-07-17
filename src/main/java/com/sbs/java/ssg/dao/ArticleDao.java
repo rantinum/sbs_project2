@@ -26,8 +26,8 @@ public class ArticleDao extends Dao {
 		sb.append(String.format("updateDate = NOW(), "));
 		sb.append(String.format("title = '%s', ", article.title));
 		sb.append(String.format("body = '%s', ", article.body));
-		sb.append(String.format("memberId = '%s', ", article.memberId));
-		sb.append(String.format("boardId = '%s' ", article.boardId));
+		sb.append(String.format("memberId = '%d', ", article.memberId));
+		sb.append(String.format("boardId = '%d' ", article.boardId));
 
 
 		return dbConnection.insert(sb.toString());
@@ -99,7 +99,7 @@ public class ArticleDao extends Dao {
 
 		sb.append(String.format("SELECT * "));
 		sb.append(String.format("FROM `board` "));
-		sb.append(String.format("WHERE id = '%s' ", id));
+		sb.append(String.format("WHERE id = '%d' ", id));
 
 		Map<String, Object> row = dbConnection.selectRow(sb.toString());
 
@@ -108,6 +108,24 @@ public class ArticleDao extends Dao {
 		}
 
 		return new Board(row);
+	}
+
+	public Article getForPrintArticle(int id) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("SELECT A.*, M.name AS extra__writerName "));
+		sb.append(String.format("FROM article AS A "));
+		sb.append(String.format("INNER JOIN `member` as M "));
+		sb.append(String.format("ON A.memberId = M.id "));
+		sb.append(String.format("WHERE A.id = '%d' ", id));
+
+		Map<String, Object> row = dbConnection.selectRow(sb.toString());
+
+		if (row.isEmpty()) {
+			return null;
+		}
+
+		return new Article(row);
 	}
 
 }

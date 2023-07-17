@@ -42,6 +42,9 @@ public class ArticleController extends Controller {
 		case "modify":
 			doModify();
 			break;
+		case "delete":
+			doDelete();
+			break;
 		case "changeBoard":
 			doChangeBoard();
 			break;
@@ -57,23 +60,22 @@ public class ArticleController extends Controller {
 	private void doCurrentBoard() {
 		Board board = session.getCurrentBoard();
 		System.out.printf("현재 게시판 : %s게시판\n", board.getName());
-		
+
 	}
 
 	private void doChangeBoard() {
 		String[] commandBits = command.split(" ");
 		int boardCode = Integer.parseInt(commandBits[2]);
-		
 
 		Board board = articleService.getBoard(boardCode);
-		
-		if ( board == null ) {
+
+		if (board == null) {
 			System.out.println("해당 게시판이 존재하지 않습니다.");
 		} else {
 			System.out.printf("[%s게시판] 으로 게시판이 변경되었습니다.\n", board.getName());
 			session.setCurrentBoard(board);
 		}
-		
+
 	}
 
 	public void doWrite() {
@@ -81,7 +83,7 @@ public class ArticleController extends Controller {
 		String title = sc.nextLine();
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
-		
+
 		int memberId = session.getLoginedMember().getId();
 		int boardId = session.getCurrentBoard().getId();
 
@@ -92,7 +94,7 @@ public class ArticleController extends Controller {
 
 	public void showList() {
 		List<Article> forPrintArticles = articleService.getArticles();
-		
+
 //		String searchKeyword = command.substring("article list".length()).trim();
 //		
 //		List<Article> forPrintArticles = articleService.getForPrintArticles(searchKeyword);
@@ -136,13 +138,13 @@ public class ArticleController extends Controller {
 		String[] commandBits = command.split(" ");
 		int id = Integer.parseInt(commandBits[2]);
 
-		Article foundArticle = articleService.getArticleById(id);
+		Article foundArticle = articleService.getArticle(id);
 
 		if (foundArticle == null) {
 			System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
 			return;
 		}
-		
+
 		Member loginedMember = session.getLoginedMember();
 
 		if (foundArticle.memberId != loginedMember.id) {
@@ -155,23 +157,22 @@ public class ArticleController extends Controller {
 		System.out.printf("내용 : ");
 		String body = sc.nextLine();
 
-		foundArticle.title = title;
-		foundArticle.body = body;
+		articleService.modify(foundArticle.id, title, body);
 
-		System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
+		System.out.printf("%d번 게시물이 수정되었습니다.\n", foundArticle.id);
 	}
 
 	public void doDelete() {
 		String[] commandBits = command.split(" ");
 		int id = Integer.parseInt(commandBits[2]);
 
-		Article foundArticle = articleService.getArticleById(id);
+		Article foundArticle = articleService.getArticle(id);
 
 		if (foundArticle == null) {
 			System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
 			return;
 		}
-		
+
 		Member loginedMember = session.getLoginedMember();
 
 		if (foundArticle.memberId != loginedMember.id) {
@@ -179,8 +180,8 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		articleService.remove(foundArticle);
-		System.out.printf("%d번 게시물이 삭제되었습니다.\n", id);
+		articleService.delete(foundArticle.id);
+		System.out.printf("%d번 게시물이 삭제되었습니다.\n", foundArticle.id);
 	}
 
 }

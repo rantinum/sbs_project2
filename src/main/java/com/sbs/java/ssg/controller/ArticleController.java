@@ -1,5 +1,6 @@
 package com.sbs.java.ssg.controller;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,12 +57,23 @@ public class ArticleController extends Controller {
 	private void doCurrentBoard() {
 		Board board = session.getCurrentBoard();
 		System.out.printf("현재 게시판 : %s게시판\n", board.getName());
-
 	}
 
 	private void doChangeBoard() {
-		String[] commandBits = command.split(" ");
-		int boardCode = Integer.parseInt(commandBits[2]);
+		System.out.println("1. 공지사항 게시판");
+		System.out.println("2. 자유 게시판");
+		System.out.print("게시판 번호를 입력하세요) ");
+		
+		int boardCode = 0;
+		
+		try	{
+			boardCode = sc.nextInt();
+			sc.nextLine();
+		} catch(InputMismatchException e) {
+			System.out.println("잘못 입력하셨습니다.");
+			sc.nextLine();
+			return;
+		}
 
 		Board board = articleService.getBoard(boardCode);
 

@@ -25,8 +25,8 @@ public class App {
 		System.out.println("명령어 모음");
 		System.out.println("1. 회원가입 : member join");
 		System.out.println("2. 로그인/로그아웃 : member login/logout");
-		System.out.println("3. 현재 게시판 확인 : currentBoard");
-		System.out.println("4. 게시판 변경 : changeBoard");
+		System.out.println("3. 현재 게시판 확인 : article currentBoard");
+		System.out.println("4. 게시판 변경 : article changeBoard");
 		System.out.println("5. 게시물 리스트 : article list");
 		System.out.println("6. 게시물 상세 : article detail");
 		System.out.println("7. 게시물 작성(로그인 후 이용가능) : article write");

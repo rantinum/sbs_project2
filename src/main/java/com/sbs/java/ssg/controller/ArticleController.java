@@ -107,9 +107,9 @@ public class ArticleController extends Controller {
 		System.out.println("번호 |   작성자  | 조회 | 제목");
 		for (int i = forPrintArticles.size() - 1; i >= 0; i--) {
 			Article article = forPrintArticles.get(i);
-			String writerName = memberService.getMemberByNameId(article.memberId);
+			Member member = memberService.getMember(article.memberId);
 
-			System.out.printf("%4d | %6s | %4d | %s\n", article.id, writerName, article.hit, article.title);
+			System.out.printf("%4d | %6s | %4d | %s\n", article.id, member.name, article.hit, article.title);
 		}
 	}
 

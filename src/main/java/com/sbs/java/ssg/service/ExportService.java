@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.dto.Article;
+import com.sbs.java.ssg.dto.Member;
 import com.sbs.java.ssg.util.Util;
 
 public class ExportService {
@@ -19,13 +20,13 @@ public class ExportService {
 		List<Article> articles = articleService.getForPrintArticles();
 		
 		for ( Article article : articles ) {
-			String writerName = memberService.getMemberByNameId(article.memberId);
+			Member member = memberService.getMember(article.memberId);
 			
 			String fileName = article.id + ".html";
 			String html = "<meta charset=\"UTF-8\">";
 			html += "<div>번호 : " + article.id + "</div>";
 			html += "<div>날짜 : " + article.regDate + "</div>";
-			html += "<div>작성자 : " + writerName + "</div>";
+			html += "<div>작성자 : " + member.name + "</div>";
 			html += "<div>제목 : " + article.title + "</div>";
 			if ( article.id > 1 ) {
 				html += "<div><a href=\"" + (article.id - 1) + ".html\">이전글</a></div>";

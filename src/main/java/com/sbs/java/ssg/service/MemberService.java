@@ -20,8 +20,7 @@ public class MemberService {
 		memberDao.join(member);
 	}
 
-	public String getMemberByNameId(int memberId) {
-		
-		return null;
+	public Member getMember(int memberId) {
+		return memberDao.getMember(memberId);
 	}
 }

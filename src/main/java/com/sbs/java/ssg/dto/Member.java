@@ -2,6 +2,9 @@ package com.sbs.java.ssg.dto;
 
 import java.util.Map;
 
+import lombok.Data;
+
+@Data
 public class Member extends Dto {
 	public String loginId;
 	public String loginPw; 

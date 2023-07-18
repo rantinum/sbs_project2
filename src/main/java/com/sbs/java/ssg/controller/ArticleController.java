@@ -13,22 +13,18 @@ import com.sbs.java.ssg.service.MemberService;
 public class ArticleController extends Controller {
 	private Scanner sc;
 	private String command;
-	private String actionMethodName;
 	private ArticleService articleService;
 	private MemberService memberService;
 	private Session session;
 
-	public ArticleController(Scanner sc) {
-		this.sc = sc;
+	public ArticleController() {
+		sc = Container.getScanner();
+		session = Container.getSession();
 		articleService = Container.articleService;
 		memberService = Container.memberService;
-		session = Container.getSession();
 	}
 
 	public void doAction(String command, String actionMethodName) {
-		this.command = command;
-		this.actionMethodName = actionMethodName;
-
 		switch (actionMethodName) {
 		case "list":
 			showList();

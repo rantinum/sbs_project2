@@ -1,7 +1,5 @@
 package com.sbs.java.ssg;
 
-import java.util.Scanner;
-
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.controller.ArticleController;
 import com.sbs.java.ssg.controller.Controller;
@@ -34,18 +32,13 @@ public class App {
 		System.out.println("7. 게시물 작성(로그인 후 이용가능) : article write");
 		System.out.println("8. 게시물 수정/삭제(로그인 후 이용가능) : article modify/delete");
 
-		Scanner sc = new Scanner(System.in);
+		MemberController memberController = new MemberController();
+		ArticleController articleController = new ArticleController();
+		ExportController exportController = new ExportController();
 		
-		MemberController memberController = new MemberController(sc);
-		ArticleController articleController = new ArticleController(sc);
-		ExportController exportController = new ExportController(sc);
-		
-//		articleController.makeTestData();
-//		memberController.makeTestData();
-
 		while (true) {
 			System.out.printf("명령어) ");
-			String command = sc.nextLine();
+			String command = Container.getScanner().nextLine();
 			command = command.trim();
 
 			if (command.length() == 0) {
@@ -108,7 +101,9 @@ public class App {
 			controller.doAction(command, actionMethodName);
 		}
 
-		sc.close();
+		Container.getDBConnection().close();
+		Container.getScanner().close();
+		
 		System.out.println("== 프로그램 끝 ==");
 	}
 }

@@ -1,19 +1,12 @@
 package com.sbs.java.ssg.controller;
 
-import java.util.Scanner;
-
 import com.sbs.java.ssg.container.Container;
-import com.sbs.java.ssg.dto.Member;
 import com.sbs.java.ssg.service.ExportService;
-import com.sbs.java.ssg.service.MemberService;
-import com.sbs.java.ssg.util.Util;
 
 public class ExportController extends Controller {
-	private Scanner sc;
 	private ExportService exportService;
 	
-	public ExportController(Scanner sc) {
-		this.sc = sc;
+	public ExportController() {
 		exportService = Container.exportService;
 	}
 

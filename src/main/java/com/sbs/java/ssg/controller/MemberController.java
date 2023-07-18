@@ -5,25 +5,19 @@ import java.util.Scanner;
 import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.dto.Member;
 import com.sbs.java.ssg.service.MemberService;
-import com.sbs.java.ssg.util.Util;
 
 public class MemberController extends Controller {
 	private Scanner sc;
-	private String command;
-	private String actionMethodName;
 	private MemberService memberService;
 	private Session session;
 	
-	public MemberController(Scanner sc) {
-		this.sc = sc;
-		memberService = Container.memberService;
+	public MemberController() {
+		sc = Container.getScanner();
 		session = Container.getSession();
+		memberService = Container.memberService;
 	}
 	
 	public void doAction(String command, String actionMethodName) {
-		this.command = command;
-		this.actionMethodName = actionMethodName;
-		
 		switch ( actionMethodName ) {
 		case "join":
 			doJoin();

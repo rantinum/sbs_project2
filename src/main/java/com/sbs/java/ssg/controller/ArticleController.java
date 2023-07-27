@@ -8,6 +8,7 @@ import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.dto.Article;
 import com.sbs.java.ssg.dto.Board;
 import com.sbs.java.ssg.dto.Member;
+import com.sbs.java.ssg.dto.Reply;
 import com.sbs.java.ssg.service.ArticleService;
 import com.sbs.java.ssg.service.MemberService;
 
@@ -26,6 +27,8 @@ public class ArticleController extends Controller {
 	}
 
 	public void doAction(String command, String actionMethodName) {
+		this.command = command;
+
 		switch (actionMethodName) {
 		case "list":
 			showList();
@@ -63,15 +66,10 @@ public class ArticleController extends Controller {
 		System.out.println("1. 공지사항 게시판");
 		System.out.println("2. 자유 게시판");
 		System.out.print("게시판 번호를 입력하세요) ");
-		
-		int boardCode = 0;
-		
-		try	{
-			boardCode = sc.nextInt();
-			sc.nextLine();
-		} catch(InputMismatchException e) {
-			System.out.println("잘못 입력하셨습니다.");
-			sc.nextLine();
+
+		int boardCode = checkScNum();
+
+		if (boardCode == 0) {
 			return;
 		}
 
@@ -80,7 +78,7 @@ public class ArticleController extends Controller {
 		if (board == null) {
 			System.out.println("해당 게시판이 존재하지 않습니다.");
 		} else {
-			System.out.printf("[%s게시판] 으로 게시판이 변경되었습니다.\n", board.getName());
+			System.out.printf("[%s 게시판]으로 변경되었습니다.\n", board.getName());
 			session.setCurrentBoard(board);
 		}
 
@@ -101,17 +99,19 @@ public class ArticleController extends Controller {
 	}
 
 	public void showList() {
-		List<Article> forPrintArticles = articleService.getArticles();
+		String boardCode = Container.getSession().getCurrentBoard().getCode();
+		String searchKeyword = command.substring("article list".length()).trim();
 
-//		String searchKeyword = command.substring("article list".length()).trim();
-//		
-//		List<Article> forPrintArticles = articleService.getForPrintArticles(searchKeyword);
-//		
-//		if (forPrintArticles.size() == 0) {
-//			System.out.println("검색결과가 존재하지 않습니다.");
-//			return;
-//		}
+		List<Article> forPrintArticles = articleService.getForPrintArticles(boardCode, searchKeyword);
 
+		if (forPrintArticles.size() == 0) {
+			System.out.println("검색결과가 존재하지 않습니다.");
+			return;
+		}
+
+		String boardName = Container.getSession().getCurrentBoard().getName();
+
+		System.out.printf("[%s 게시판]\n", boardName);
 		System.out.println("번호 |   작성자  | 조회 | 제목");
 		for (int i = forPrintArticles.size() - 1; i >= 0; i--) {
 			Article article = forPrintArticles.get(i);
@@ -121,9 +121,46 @@ public class ArticleController extends Controller {
 		}
 	}
 
+	public int checkScNum() {
+		int id = 0;
+
+		try {
+			id = sc.nextInt();
+			sc.nextLine();
+		} catch (InputMismatchException e) {
+			System.out.println("잘못 입력하셨습니다.");
+			sc.nextLine();
+			return 0;
+		}
+
+		return id;
+	}
+
+	private boolean articleReplyAuthorityCheck() {
+		System.out.println("1) 네 2) 아니오");
+		System.out.printf("입력) ");
+		String replyCheck = sc.nextLine();
+
+		if (replyCheck.equals("1") || replyCheck.equals("네")) {
+			if (session.isLogined() == false) {
+				System.out.println("로그인 후 이용 가능합니다.");
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+		return true;
+	}
+
 	public void showDetail() {
-		String[] commandBits = command.split(" ");
-		int id = Integer.parseInt(commandBits[2]);
+		System.out.print("게시물 번호를 입력하세요) ");
+
+		int id = checkScNum();
+
+		if (id == 0) {
+			return;
+		}
 
 		Article foundArticle = articleService.getForPrintArticle(id);
 
@@ -140,11 +177,54 @@ public class ArticleController extends Controller {
 		System.out.printf("제목 : %s\n", foundArticle.title);
 		System.out.printf("내용 : %s\n", foundArticle.body);
 		System.out.printf("조회 : %s\n", foundArticle.hit);
+
+		System.out.printf("[%d번 댓글 보기]\n", id);
+		boolean replyCheck = articleReplyAuthorityCheck();
+
+		if (replyCheck == false) {
+			return;
+		}
+		
+		articleRepliesShowList(id);
+
+		System.out.println("댓글을 등록 하시겠습니까?");
+		replyCheck = articleReplyAuthorityCheck();
+
+		if (replyCheck) {
+			System.out.println("댓글을 입력해주세요.");
+			System.out.printf("입력) ");
+			String replyBody = sc.nextLine();
+			int memberId = session.getLoginedMember().getId();
+
+			articleService.replyWrite(id, memberId, replyBody);
+
+			System.out.println("댓글이 작성되었습니다.");
+
+			articleRepliesShowList(id);
+		}
+	}
+
+	private void articleRepliesShowList(int articleId) {
+		List<Reply> forPrintArticleReplies = articleService.getForPrintArticleReplies(articleId);
+
+		System.out.printf("[%d번 게시물 댓글]\n", articleId);
+		System.out.println("번호 |   작성자  |  내용");
+		for (int i = forPrintArticleReplies.size() - 1; i >= 0; i--) {
+			Reply reply = forPrintArticleReplies.get(i);
+			Member member = memberService.getMember(reply.memberId);
+
+			System.out.printf("%4d | %6s | %s\n", reply.id, member.name, reply.body);
+		}
 	}
 
 	public void doModify() {
-		String[] commandBits = command.split(" ");
-		int id = Integer.parseInt(commandBits[2]);
+		System.out.print("수정할 게시물 번호를 입력하세요) ");
+
+		int id = checkScNum();
+
+		if (id == 0) {
+			return;
+		}
 
 		Article foundArticle = articleService.getArticle(id);
 
@@ -171,8 +251,13 @@ public class ArticleController extends Controller {
 	}
 
 	public void doDelete() {
-		String[] commandBits = command.split(" ");
-		int id = Integer.parseInt(commandBits[2]);
+		System.out.print("삭제할 게시물 번호를 입력하세요) ");
+
+		int id = checkScNum();
+
+		if (id == 0) {
+			return;
+		}
 
 		Article foundArticle = articleService.getArticle(id);
 

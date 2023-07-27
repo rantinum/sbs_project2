@@ -8,13 +8,12 @@ import com.sbs.java.ssg.container.Container;
 import com.sbs.java.ssg.db.DBConnection;
 import com.sbs.java.ssg.dto.Article;
 import com.sbs.java.ssg.dto.Board;
+import com.sbs.java.ssg.dto.Reply;
 
 public class ArticleDao extends Dao {
-	public List<Article> articles;
 	private DBConnection dbConnection;
 
 	public ArticleDao() {
-		articles = new ArrayList<>();
 		dbConnection = Container.getDBConnection();
 	}
 
@@ -47,7 +46,30 @@ public class ArticleDao extends Dao {
 
 		return articles;
 	}
+	
+	public List<Article> getForPrintArticles(String boardCode, String searchkeyword) {
+		StringBuilder sb = new StringBuilder();
 
+		sb.append(String.format("SELECT A.* "));
+		sb.append(String.format("FROM `article` AS A "));
+		sb.append(String.format("INNER JOIN `board` AS B "));
+		sb.append(String.format("ON A.boardId = B.id "));
+		sb.append(String.format("WHERE B.`code` = '%s' ", boardCode));
+		if ( searchkeyword.length() > 0 ) {
+			sb.append(String.format("AND A.title LIKE '%%%s%%' ", searchkeyword));
+		}		
+		sb.append(String.format("ORDER BY A.id DESC "));
+
+		List<Article> articles = new ArrayList<>();
+		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
+
+		for (Map<String, Object> row : rows) {
+			articles.add(new Article(row));
+		}
+
+		return articles;
+	}
+	
 	public Article getArticle(int id) {
 		StringBuilder sb = new StringBuilder();
 
@@ -62,24 +84,6 @@ public class ArticleDao extends Dao {
 		}
 
 		return new Article(row);
-	}
-
-	public List<Article> getForPrintArticles(String searchkeyword) {
-		if (searchkeyword != null && searchkeyword.length() != 0) {
-			List<Article> forPrintArticles = new ArrayList<>();
-
-			if (searchkeyword.length() > 0) {
-				for (Article article : articles) {
-					if (article.title.contains(searchkeyword)) {
-						forPrintArticles.add(article);
-					}
-				}
-			}
-
-			return forPrintArticles;
-		}
-
-		return articles;
 	}
 
 	public Article getForPrintArticle(int id) {
@@ -135,6 +139,41 @@ public class ArticleDao extends Dao {
 		}
 
 		return new Board(row);
+	}
+	
+	//	댓글 ============
+	
+	public int replyWrite(int articleId, int memberId, String replyBody) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(String.format("INSERT INTO articleReply "));
+		sb.append(String.format("SET regDate = NOW(), "));
+		sb.append(String.format("updateDate = NOW(), "));
+		sb.append(String.format("`body` = '%s', ", replyBody));
+		sb.append(String.format("memberId = '%d', ", memberId));
+		sb.append(String.format("articleId = '%d' ", articleId));
+
+		return dbConnection.insert(sb.toString());
+	}
+
+	public List<Reply> getForPrintArticleReplies(int articleId) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("SELECT R.* "));
+		sb.append(String.format("FROM `articleReply` AS R "));
+		sb.append(String.format("INNER JOIN `article` AS A "));
+		sb.append(String.format("ON R.articleId = A.id "));
+		sb.append(String.format("WHERE R.articleId = %d ", articleId));
+		sb.append(String.format("ORDER BY R.id DESC "));
+
+		List<Reply> articleReplies = new ArrayList<>();
+		List<Map<String, Object>> rows = dbConnection.selectRows(sb.toString());
+
+		for (Map<String, Object> row : rows) {
+			articleReplies.add(new Reply(row));
+		}
+
+		return articleReplies;
 	}
 
 }

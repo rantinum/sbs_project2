@@ -28,16 +28,19 @@ CREATE TABLE `article` (
   `body` char(100) NOT NULL,
   `memberId` int(1) unsigned NOT NULL,
   `boardId` int(1) unsigned NOT NULL,
+  `hit` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `boardId` (`boardId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `article` */
 
-insert  into `article`(`id`,`regDate`,`updateDate`,`title`,`body`,`memberId`,`boardId`) values 
-(1,'2023-07-14 12:08:08','2023-07-14 12:08:08','제목1','내용1',1,1),
-(2,'2023-07-14 12:08:30','2023-07-14 12:08:30','제목2','내용2',2,1),
-(3,'2023-07-14 12:08:30','2023-07-14 12:08:30','제목3','내용3',1,2);
+insert  into `article`(`id`,`regDate`,`updateDate`,`title`,`body`,`memberId`,`boardId`,`hit`) values 
+(1,'2023-07-20 11:39:30','2023-07-20 11:39:30','제목1','내용1',1,1,0),
+(2,'2023-07-20 11:39:30','2023-07-20 11:39:30','제목2','내용2',2,1,0),
+(3,'2023-07-20 11:39:30','2023-07-20 11:39:30','제목3','내용3',1,2,0),
+(4,'2023-07-20 11:40:43','2023-07-20 11:40:43','안녕','안녕',1,1,0),
+(5,'2023-07-20 11:40:49','2023-07-20 11:40:49','반가워','반가워',1,1,0);
 
 /*Table structure for table `articleReply` */
 
@@ -57,8 +60,8 @@ CREATE TABLE `articleReply` (
 /*Data for the table `articleReply` */
 
 insert  into `articleReply`(`id`,`regDate`,`updateDate`,`body`,`memberId`,`articleId`) values 
-(1,'2023-07-14 12:09:44','2023-07-14 12:09:44','댓글1',1,2),
-(2,'2023-07-14 12:09:44','2023-07-14 12:09:44','댓글2',2,1);
+(1,'2023-07-20 11:39:39','2023-07-20 11:39:39','댓글1',1,2),
+(2,'2023-07-20 11:39:39','2023-07-20 11:39:39','댓글2',2,1);
 
 /*Table structure for table `board` */
 
@@ -77,8 +80,8 @@ CREATE TABLE `board` (
 /*Data for the table `board` */
 
 insert  into `board`(`id`,`regDate`,`updateDate`,`code`,`name`) values 
-(1,'2023-07-14 12:12:39','2023-07-14 12:12:39','notice','공지'),
-(2,'2023-07-14 12:12:39','2023-07-14 12:12:39','free','자유');
+(1,'2023-07-20 11:39:51','2023-07-20 11:39:51','notice','공지'),
+(2,'2023-07-20 11:39:51','2023-07-20 11:39:51','free','자유');
 
 /*Table structure for table `member` */
 
@@ -98,9 +101,9 @@ CREATE TABLE `member` (
 /*Data for the table `member` */
 
 insert  into `member`(`id`,`regDate`,`updateDate`,`loginId`,`loginPw`,`name`) values 
-(1,'2023-07-14 12:11:13','2023-07-14 12:11:13','admin','admin','관리자'),
-(2,'2023-07-14 12:11:40','2023-07-14 12:11:40','user1','user1','유저1'),
-(3,'2023-07-14 12:11:40','2023-07-14 12:11:40','user2','user2','유저2');
+(1,'2023-07-20 11:39:45','2023-07-20 11:39:45','admin','admin','관리자'),
+(2,'2023-07-20 11:39:45','2023-07-20 11:39:45','user1','user1','유저1'),
+(3,'2023-07-20 11:39:45','2023-07-20 11:39:45','user2','user2','유저2');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
